@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action="/api" method="get" onsubmit="submitHandler(event)">
+        <input name="todo" type="text" id="todo" placeholder="Add to list">
+        <button type="submit">Submit</button>
+    </form>
+    <ul id="list"></ul>
+
+    <script>
+        function submitHandler(event) {
+            event.preventDefault();
+            let todo = document.getElementById("todo").value;
+            console.log(todo);
+
+           
+            addToTodoList(todo);
+
+       
+            document.getElementById("todo").value = "";
+        }
+
+        function addToTodoList(todo) {
+            fetch("/api?todo=" + todo, {
+                method: "GET"
+            })
+            .then(res => res.text())
+            .then(data => {
+                console.log(data);
+                if (data.startsWith("Added todo item:")) {
+                    let listItem = document.createElement("li");
+                    listItem.textContent = data.replace("Added todo item: ", "");
+                    document.getElementById("list").appendChild(listItem);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
